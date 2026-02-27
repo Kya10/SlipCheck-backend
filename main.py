@@ -4,7 +4,9 @@ from typing import List
 from risk_engine import analyze_slip
 
 app = FastAPI()
-
+@app.get("/")
+def root():
+    return {"status": "Slipcheck API running"}
 
 class Leg(BaseModel):
     match: str
@@ -19,4 +21,5 @@ class Slip(BaseModel):
 @app.post("/analyze-slip")
 def analyze(slip: Slip):
     result = analyze_slip([leg.dict() for leg in slip.legs])
+
     return result
