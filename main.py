@@ -47,10 +47,30 @@ class Slip(BaseModel):
     legs: List[Leg]
 
 
-@app.post("/analyze-slip")
-def analyze(slip: Slip):
-    result = analyze_slip([leg.dict() for leg in slip.legs])
+def analyze_slip(legs):
+    risk_score = 0
+    warnings = []
+    suggestions = []
+    flagged_legs = []
 
-    return result
+    for leg in legs:
+        # normalization
+        category = normalize_market(leg["market"])
+        leg["category"] = category
+
+        print("Normalized:", leg["market"], "→", category)
+
+        # example scoring logic (keep your real logic)
+        if category == "goals_over":
+            warnings.append("Goals markets carry higher variance due to late scoring swings")
+
+        # continue existing scoring logic here...
+
+    return {
+        "risk_score": risk_score,
+        "warnings": warnings,
+        "suggestions": suggestions,
+        "flagged_legs": flagged_legs
+    }
 
 
